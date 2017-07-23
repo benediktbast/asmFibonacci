@@ -1,5 +1,5 @@
 section .data
-	welcome db "How many numbers do you want to add?",0
+	welcome db "How many numbers do you want to add? ",0
 	defaultMax db 20
 	sys_exit equ 60
 	sys_write equ 1
@@ -15,7 +15,7 @@ section .text
 
 _start:
 	mov rax, welcome
-	call _printString	; print welcom message
+	call _printString	; print welcome message
 	call _getMaxNum
 	call _quit
 
@@ -31,11 +31,14 @@ _getMaxNum:
 
 ;input: rax as pointer to string
 ;output: print string at rax to std_out
-_printString:
+_printStringi:
 	push rax
 	mov rbx, 0			; counter for print loop
 
-_printLoop:
+;input: rax as string pointer
+;input: rbx as counter
+;output: find null terminator and print string
+_printStringLoop:
 	inc rax				; inrecment string pointer
 	inc rbx				; increment counter
 	mov cl, [rax]		; mov current char to 8 bit equiv of rcx

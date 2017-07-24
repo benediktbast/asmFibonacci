@@ -14,8 +14,8 @@ section .text
 	global _start
 
 _start:
-	mov rax, welcome
-	call _printString	; print welcome message
+	mov rax, welcome	; print welcome messagee
+	call _printString	
 	call _getMaxNum
 	call _quit
 
@@ -26,29 +26,26 @@ _getMaxNum:
 	mov rdi, std_in
 	mov rsi, maxnum
 	mov rdx, 8
-	syscall				;sys_read(std_in, maxnum, 8)
+	syscall				; sys_read(std_in, maxnum, 8)
 	ret
 
-;input: rax as pointer to string
-;output: print string at rax to std_out
-_printStringi:
+;input: rax = pointer to string
+;output: print null terminated string at rax to std_out
+_printString:
 	push rax
 	mov rbx, 0			; counter for print loop
 
-;input: rax as string pointer
-;input: rbx as counter
-;output: find null terminator and print string
 _printStringLoop:
 	inc rax				; inrecment string pointer
 	inc rbx				; increment counter
-	mov cl, [rax]		; mov current char to 8 bit equiv of rcx
+	mov cl, [rax]		; mov current char (8 bit) to rcx
 	cmp cl, 0			; check for null terminator
-	jne _printLoop		; continue loop
+	jne _printStringLoop		; continue loop
 
 	mov rax, sys_write
 	mov rdi, std_out
 	pop rsi				; get string from stack
-	mov rdx, rbx
+	mov rdx, rbx		; length of string = counter
 	syscall				; sys_write(std_out, string, rbx)
 	ret
 

@@ -87,7 +87,7 @@ _printInt:
 ; convert ints to char
 ; store to strBuffer in reversed order
 _printIntLoop:
-	mov rdx, 0 			; set rdx to zero before division
+	xor rdx, rdx 		; set rdx (remainder) to zero before division
 	mov rbx, 10			; move divisor to rbx
 	div rbx				; divide rax by 10
 	push rax			; push result to stack

@@ -1,5 +1,5 @@
 section .data
-	welcome db "How many numbers do you want to add? ",0
+	msg db "How many numbers do you want to add? ",0
 	defaultMax equ 1337
 	sys_exit equ 60
 	sys_write equ 1
@@ -9,14 +9,14 @@ section .data
 
 section .bss
 	maxnum resb 100		; user input for maximum number
-	intSpace resb 100	; 100 bytes for integer conversion
-	intSpacePos resb 8	; 8 bytes for array position
+	strBuffer resb 100	; 100 bytes for integer conversion
+	strBufferPos resb 8	; 8 bytes for array position
 
 section .text
 	global _start
 
 _start:
-	mov rax, welcome	; print welcome messagee
+	mov rax, msg	; print welcome messagee
 	call _printString
 	mov rax, defaultMax
 	call _printInt
@@ -56,12 +56,14 @@ _printStringLoop:
 ; input: rax = integer to print
 ; output: print integers as string to std_out
 _printInt:
-	mov rcx, intSpace		; move adress of integer buffer to rcx
+	mov rcx, strBuffer		; move adress of buffer to rcx
 	mov rbx, 10				; new line character
 	mov [rcx], rbx			; add new line character first position of array
 	inc rcx					; increment adress after adding cr
-	mov [intSpacePos], rcx	; update array position
+	mov [strBufferPos], rcx	; set array position to second element in strBuffer
 
+; convert ints to char
+; store to strBuffer in reversed order
 _printIntLoop:
 	mov rdx, 0 			; set rdx to zero before division
 	mov rbx, 10			; move divisor to rbx
@@ -69,19 +71,18 @@ _printIntLoop:
 	push rax			; push result to stack
 	add rdx, 48			; remainder + 48 = ascii code for one integer
 	
-	mov rcx, [intSpacePos] 	; current position in array
+	mov rcx, [strBufferPos] 	; current position in array
 	mov [rcx], dl			; move char (lower 8 bytes of rdx) to array
 	inc rcx					; increment position
-	mov [intSpacePos], rcx	; update pointer to array Position
+	mov [strBufferPos], rcx	; update pointer to array Position
 
 	pop rax				; pop division result from stack
 	cmp rax, 0			; if division result !=0
 	jne _printIntLoop	; continue loop
 
-; string is now in reversed order
-; print in correct order
+; print chars in strBuffer in corret order to std
 _printIntLoop2: 
-	mov rcx, [intSpacePos]	; move last char to rcx
+	mov rcx, [strBufferPos]	; move last char to rcx
 
 	mov rax, sys_write
 	mov rdi, std_out
@@ -89,11 +90,11 @@ _printIntLoop2:
 	mov rdx, 1				; 1 byte
 	syscall
 
-	mov rcx, [intSpacePos]
+	mov rcx, [strBufferPos]
 	dec rcx					; decrement array pointer
-	mov [intSpacePos], rcx	; update array pointer
+	mov [strBufferPos], rcx	; update array pointer
 
-	cmp rcx, intSpace		; if array position >= start of int bffer
+	cmp rcx, strBuffer		; if array position >= start of int bffer
 	jge _printIntLoop2		; continue printing
 
 	ret

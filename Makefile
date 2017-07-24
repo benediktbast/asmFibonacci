@@ -11,4 +11,4 @@ fib.o:
 	$(CC) $(CCOPTIONS) fib.asm -o fib.o
 
 clean:
-	$(RM) *.o *.swp
+	$(RM) *.o *.swp ~*

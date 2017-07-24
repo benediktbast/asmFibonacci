@@ -29,7 +29,7 @@ _start:
 _fibonacci:
 	mov [r1], DWORD 0 
 	mov [r2], DWORD 1 	; start with numbers 0 and 1
-	mov rbx, 0 		; set counter to 0
+	mov rbx, defaultMax 		; set counter to 0
 
 _fibonacciLoop:
 	mov rax, [r1]	; mov r1 value to rax
@@ -43,9 +43,8 @@ _fibonacciLoop:
 	call _printInt	; print result from rax
 
 	pop rbx			; get counter from stack
-	inc rbx			; increment counter
-	cmp rbx, defaultMax ; if counter == max
-	jl _fibonacciLoop	; countinue Loop
+	sub rbx, 1		; decrement coutner
+	jnz _fibonacciLoop	; countinue loop if rbx > 0 
 
 	ret					; else return
 

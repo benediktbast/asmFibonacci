@@ -11,5 +11,5 @@ You need:
 
 `make all clean`
  
-`/fib`
+`./fib`
 

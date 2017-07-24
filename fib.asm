@@ -97,7 +97,7 @@ _printIntLoop:
 	push rax			; push result to stack
 	add rdx, 48			; remainder + 48 = ascii code for one integer
 	
-	mov rcx, [strBufferPos] 	; current position in array
+	mov rcx, [strBufferPos] ; current position in array
 	mov [rcx], dl			; move char (lower 8 bytes of rdx) to array
 	inc rcx					; increment position
 	mov [strBufferPos], rcx	; update pointer to array Position

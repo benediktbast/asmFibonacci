@@ -16,19 +16,23 @@ section .text
 	global _start
 
 _start:
-	mov rax, msg	; print welcome messagee
+	mov rax, msg		; print welcome messagee
 	call _printString
-	mov rax, defaultMax
+
+	mov rax, defaultMax ; print default max
 	call _printInt
-	call _fibonacci
-	mov rax, sys_exit
+
+	call _fibonacci		; calculate fibonacci
+
+	mov rax, sys_exit	; exit(0)
 	mov rdi, 0
 	syscall
 
+; output: calculating fibonacci numbers with a given limit
 _fibonacci:
 	mov r8, QWORD 0 
 	mov r9, QWORD 1 	; start with numbers 0 and 1
-	mov rbx, defaultMax 		; set counter to 0
+	mov rbx, defaultMax ; set counter to 0
 
 _fibonacciLoop:
 	mov rax, QWORD r8	
@@ -36,11 +40,11 @@ _fibonacciLoop:
 	mov r8, QWORD r9	; use r9 as first parameter next time
 	mov r9, QWORD rax	; use result as second parameter next time
 
-	push rbx		; safe counter in stack
-	call _printInt	; print result from rax
+	push rbx			; safe counter in stack
+	call _printInt		; print result from rax
 
-	pop rbx			; get counter from stack
-	sub rbx, 1		; decrement counter
+	pop rbx				; get counter from stack
+	sub rbx, 1			; decrement counter
 	jnz _fibonacciLoop	; countinue loop if rbx > 0 
 
 	ret					; else return
@@ -120,4 +124,3 @@ _printIntLoop2:
 	jge _printIntLoop2		; continue printing
 
 	ret
-

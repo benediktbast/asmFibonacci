@@ -4,13 +4,11 @@ This will be a Fibonacci Implementation in ASM for x86_64 Linux. Currently it is
 
 ## How to build:
 You need:
-	*linux x68_64
-	*nasm
-	*ld for linking
+*  linux x68_64
+*  nasm
+*  ld for linking
 
 
-`
-make all clean
+`make all clean`
+`/fib`
 
-./fib
-`

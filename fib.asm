@@ -1,6 +1,6 @@
 section .data
 	msg db "How many numbers do you want to add? ",0
-	defaultMax equ 75
+	defaultMax equ 90
 	sys_exit equ 60
 	sys_write equ 1
 	sys_read equ 0
@@ -11,8 +11,6 @@ section .bss
 	maxnum resb 100		; user input for maximum number
 	strBuffer resb 100	; 100 bytes for integer conversion
 	strBufferPos resb 8	; 8 bytes for array position
-	r1 resb 8;
-	r2 resb 8
 
 section .text
 	global _start
@@ -22,28 +20,27 @@ _start:
 	call _printString
 	mov rax, defaultMax
 	call _printInt
-	;call _getMaxNum
 	call _fibonacci
-	call _quit
+	mov rax, sys_exit
+	mov rdi, 0
+	syscall
 
 _fibonacci:
-	mov [r1], DWORD 0 
-	mov [r2], DWORD 1 	; start with numbers 0 and 1
+	mov r8, QWORD 0 
+	mov r9, QWORD 1 	; start with numbers 0 and 1
 	mov rbx, defaultMax 		; set counter to 0
 
 _fibonacciLoop:
-	mov rax, [r1]	; mov r1 value to rax
-	add rax, [r2]	; add r1 + r2
+	mov rax, QWORD r8	
+	adc rax, r9			; add r8 + r9 and move result to rax for output
+	mov r8, QWORD r9	; use r9 as first parameter next time
+	mov r9, QWORD rax	; use result as second parameter next time
 
-	mov rdx, [r2]	; mov r2 to rdx
-	mov [r1], rdx	; then mov value to r1
-
-	push rbx		; push counter to stack
-	mov [r2], rax	; mov result to r2
+	push rbx		; safe counter in stack
 	call _printInt	; print result from rax
 
 	pop rbx			; get counter from stack
-	sub rbx, 1		; decrement coutner
+	sub rbx, 1		; decrement counter
 	jnz _fibonacciLoop	; countinue loop if rbx > 0 
 
 	ret					; else return
@@ -124,7 +121,3 @@ _printIntLoop2:
 
 	ret
 
-_quit:
-	mov rax, sys_exit	; system call
-	mov rdi, 0			; errorcode
-	syscall				; sys_exit(0)

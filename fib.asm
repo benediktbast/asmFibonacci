@@ -1,6 +1,6 @@
 section .data
 	msg db "How many numbers do you want to add? ",0
-	defaultMax equ 1337
+	defaultMax equ 75
 	sys_exit equ 60
 	sys_write equ 1
 	sys_read equ 0
@@ -11,6 +11,8 @@ section .bss
 	maxnum resb 100		; user input for maximum number
 	strBuffer resb 100	; 100 bytes for integer conversion
 	strBufferPos resb 8	; 8 bytes for array position
+	r1 resb 8;
+	r2 resb 8
 
 section .text
 	global _start
@@ -21,7 +23,31 @@ _start:
 	mov rax, defaultMax
 	call _printInt
 	;call _getMaxNum
+	call _fibonacci
 	call _quit
+
+_fibonacci:
+	mov [r1], DWORD 0 
+	mov [r2], DWORD 1 	; start with numbers 0 and 1
+	mov rbx, 0 		; set counter to 0
+
+_fibonacciLoop:
+	mov rax, [r1]	; mov r1 value to rax
+	add rax, [r2]	; add r1 + r2
+
+	mov rdx, [r2]	; mov r2 to rdx
+	mov [r1], rdx	; then mov value to r1
+
+	push rbx		; push counter to stack
+	mov [r2], rax	; mov result to r2
+	call _printInt	; print result from rax
+
+	pop rbx			; get counter from stack
+	inc rbx			; increment counter
+	cmp rbx, defaultMax ; if counter == max
+	jl _fibonacciLoop	; countinue Loop
+
+	ret					; else return
 
 ;read 100 bytes in put from std_in
 ;output: set maxmimum number of fibonacci numbers

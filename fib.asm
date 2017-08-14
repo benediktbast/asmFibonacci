@@ -1,6 +1,7 @@
 section .data
 	msg db "How many numbers do you want to add? ",0
-	defaultMax equ 90
+	oferror db "<< Overflow Exit program >> ",0
+	defaultMax equ 190
 	sys_exit equ 60
 	sys_write equ 1
 	sys_read equ 0
@@ -25,7 +26,7 @@ _start:
 	call _fibonacci		; calculate fibonacci
 
 	mov rax, sys_exit	; exit(0)
-	mov rdi, 0
+	xor rdi, rdi
 	syscall
 
 ; output: calculating fibonacci numbers with a given limit
@@ -39,6 +40,8 @@ _fibonacciLoop:
 	adc rax, r9			; add r8 + r9 and move result to rax for output
 	mov r8, QWORD r9	; use r9 as first parameter next time
 	mov r9, QWORD rax	; use result as second parameter next time
+
+	jo _exitOF			; exit when overflow happens
 
 	push rbx			; safe counter in stack
 	call _printInt		; print result from rax
@@ -124,3 +127,11 @@ _printIntLoop2:
 	jge _printIntLoop2		; continue printing
 
 	ret
+
+_exitOF
+	mov rax, oferror
+	call _printString		; print error message
+
+	mov rax, sys_exit		; exit(1)
+	mov rdi, 1
+	syscall

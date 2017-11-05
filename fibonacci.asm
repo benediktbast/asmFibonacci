@@ -1,13 +1,14 @@
 section .data
 	msg db "How many numbers do you want to add? ",0
-	oferror db "<< Overflow Exit program >> ",0
-	defaultMax equ 190
+	oferrormsg db "<< Overflow Exit program >>",10,0
+	exitmsg db "- Done -",10,0
+	defaultMax equ 90
 	sys_exit equ 60
 	sys_write equ 1
 	sys_read equ 0
 	std_out equ 1
 	std_in equ 0
-
+	
 section .bss
 	maxnum resb 100			; user input for maximum number
 	strBuffer resb 100		; 100 bytes for integer conversion
@@ -15,6 +16,12 @@ section .bss
 
 section .text
 	global _start
+
+%macro exit 1
+	mov rax, sys_exit
+	mov rdi, %1
+	syscall
+%endmacro
 
 _start:
 	mov rax, msg			; print welcome messagee
@@ -25,9 +32,14 @@ _start:
 
 	call _fibonacci			; calculate fibonacci
 
-	mov rax, sys_exit		; exit(0)
-	xor rdi, rdi
-	syscall
+	mov rax, exitmsg
+	call _printString
+
+	exit 0				; call macro exit(0)
+
+;	mov rax, sys_exit		; exit(0)
+;	xor rdi, rdi
+;	syscall
 
 ; output: calculating fibonacci numbers with a given limit
 _fibonacci:
@@ -128,10 +140,7 @@ _printIntLoop2:
 
 	ret
 
-_exitOF
-	mov rax, oferror
+_exitOF:
+	mov rax, oferrormsg
 	call _printString		; print error message
-
-	mov rax, sys_exit		; exit(1)
-	mov rdi, 1
-	syscall
+	exit 1				; call macro exit(1)

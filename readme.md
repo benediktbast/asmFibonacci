@@ -9,7 +9,7 @@ This is my playground for learning x86_64 assembly. Work in progress, So don't e
 You need:
 *  linux x68_64
 *  nasm
-*  ld for linking
+*  ld 
 
-`make all clean`
-
+`make fibonacci clean` e.g. to build only one project
+`make all clean` to build all projects

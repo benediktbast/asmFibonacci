@@ -1,8 +1,8 @@
 section .data
 	msg db "How many numbers do you want to add? ",0
-	oferrormsg db "<< Overflow Exit program >>",10,0
-	exitmsg db "- Done -",10,0
-	defaultMax equ 90
+	ofErrorMsg db "<< Overflow Exit program >>",10,0
+	exitMsg db "- Done -",10,0
+	defaultMax equ 20
 	sys_exit equ 60
 	sys_write equ 1
 	sys_read equ 0
@@ -10,8 +10,8 @@ section .data
 	std_in equ 0
 	
 section .bss
-	maxnum resb 100			; user input for maximum number
-	strBuffer resb 100		; 100 bytes for integer conversion
+	inputBuffer resb 64		; user input for maximum number
+	strBuffer resb 64		; 100 bytes for integer conversion
 	strBufferPos resb 8		; 8 bytes for array position
 
 section .text
@@ -32,7 +32,7 @@ _start:
 
 	call _fibonacci			; calculate fibonacci
 
-	mov rax, exitmsg
+	mov rax, exitMsg
 	call _printString
 
 	exit 0				; call macro exit(0)
@@ -69,23 +69,23 @@ _fibonacciLoop:
 _getMaxNum:
 	mov rax, sys_read
 	mov rdi, std_in
-	mov rsi, maxnum
-	mov rdx, 100
-	syscall				; sys_read(std_in, maxnum, 8)
+	mov rsi, inputBuffer
+	mov rdx, 8
+	syscall				; sys_read(std_in, inputBuffer, 8)
 	ret
 
 ;input: rax = pointer to string
 ;output: print null terminated string at rax to std_out
 _printString:
 	push rax
-	mov rbx, 0			; counter for print loop
+	xor rbx, rbx			; set counter to zero
 
 _printStringLoop:
 	inc rax				; inrecment string pointer
 	inc rbx				; increment counter
 	mov cl, [rax]			; mov current char (8 bit) to rcx
-	cmp cl, 0			; check for null terminator
-	jne _printStringLoop		; continue loop
+	or cl, cl			; check for null terminator
+	jnz _printStringLoop		; continue loop
 
 	mov rax, sys_write
 	mov rdi, std_out
@@ -101,7 +101,7 @@ _printInt:
 	mov rbx, 10			; new line character
 	mov [rcx], rbx			; add new line character first position of array
 	inc rcx				; increment adress after adding cr
-	mov [strBufferPos], rcx	; set array position to second element in strBuffer
+	mov [strBufferPos], rcx		; set array position to second element in strBuffer
 
 ; convert ints to char
 ; store to strBuffer in reversed order
@@ -118,8 +118,8 @@ _printIntLoop:
 	mov [strBufferPos], rcx		; update pointer to array Position
 
 	pop rax				; pop division result from stack
-	cmp rax, 0			; if division result !=0
-	jne _printIntLoop		; continue loop
+	or rax, rax			; if division result !=0
+	jnz _printIntLoop		; continue loop
 
 ; print chars in strBuffer in corret order to std
 _printIntLoop2: 
@@ -141,6 +141,6 @@ _printIntLoop2:
 	ret
 
 _exitOF:
-	mov rax, oferrormsg
+	mov rax, ofErrorMsg
 	call _printString		; print error message
 	exit 1				; call macro exit(1)

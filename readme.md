@@ -12,4 +12,5 @@ You need:
 *  ld 
 
 `make fibonacci clean` e.g. to build only one project
+
 `make all clean` to build all projects

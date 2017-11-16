@@ -1,7 +1,9 @@
+### Project ###
+fibonacci
+
 ### ASM ###
 *.o
 *.swp
-fib
 *.out
 
 ### idea ###

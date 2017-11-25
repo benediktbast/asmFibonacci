@@ -3,7 +3,7 @@
 
 MOV SI, WelcomeMsg 		; store string pointer to SI
 CALL PrintString		; call print string procedure
-JMP $				; infinite loop;
+JMP $				; infinite loop
 
 
 ; procedure to print one char to the string

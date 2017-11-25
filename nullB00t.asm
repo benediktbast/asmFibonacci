@@ -30,7 +30,7 @@ exit_function:
 
 
 ;Data
-WelcomeMsg db 'Hello World', 0;
+WelcomeMsg db 'Hello World', 0
 
 TIMES 510 - ($ - $$) db 0	; fill up with 0 to reach 512KB
 DW 0xAA55			; boot signature at the

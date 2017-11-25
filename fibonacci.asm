@@ -47,7 +47,7 @@ _fibonacci:
 	mov r9, QWORD 1			; start with numbers 0 and 1
 	mov rbx, defaultMax		; set counter to max, decrement later
 
-_fibonacciLoop:
+.fibonacciLoop:
 	mov rax, QWORD r8	
 	adc rax, r9			; add r8 + r9 and move result to rax for output
 	mov r8, QWORD r9		; use r9 as first parameter next time
@@ -60,7 +60,7 @@ _fibonacciLoop:
 
 	pop rbx				; get counter from stack
 	sub rbx, 1			; decrement counter
-	jnz _fibonacciLoop		; countinue loop if rbx > 0 
+	jnz .fibonacciLoop		; countinue loop if rbx > 0 
 
 	ret				; else return
 
@@ -80,12 +80,12 @@ _printString:
 	push rax
 	xor rbx, rbx			; set counter to zero
 
-_printStringLoop:
+.printStringLoop:
 	inc rax				; inrecment string pointer
 	inc rbx				; increment counter
 	mov cl, [rax]			; mov current char (8 bit) to rcx
 	or cl, cl			; check for null terminator
-	jnz _printStringLoop		; continue loop
+	jnz .printStringLoop		; continue loop
 
 	mov rax, sys_write
 	mov rdi, std_out
@@ -105,7 +105,7 @@ _printInt:
 
 ; convert ints to char
 ; store to strBuffer in reversed order
-_printIntLoop:
+.printIntLoop:
 	xor rdx, rdx			; set rdx (remainder) to zero before division
 	mov rbx, 10			; move divisor to rbx
 	div rbx				; divide rax by 10
@@ -119,10 +119,10 @@ _printIntLoop:
 
 	pop rax				; pop division result from stack
 	or rax, rax			; if division result !=0
-	jnz _printIntLoop		; continue loop
+	jnz .printIntLoop		; continue loop
 
 ; print chars in strBuffer in corret order to std
-_printIntLoop2: 
+.printIntLoop2: 
 	mov rcx, [strBufferPos]		; move last char to rcx
 
 	mov rax, sys_write
@@ -136,7 +136,7 @@ _printIntLoop2:
 	mov [strBufferPos], rcx		; update array pointer
 
 	cmp rcx, strBuffer		; if array position >= start of int bffer
-	jge _printIntLoop2		; continue printing
+	jge .printIntLoop2		; continue printing
 
 	ret
 

@@ -9,11 +9,11 @@ JMP $				; infinite loop;
 ; procedure to print one char to the string
 ; input: Ascii value in SI
 PrintCharacter:
-	MOV AH, 0x0E		;Print char
-	MOV BH, 0x00		;Page no
-	MOV BL, 0x07		;Text attribute lightgrey font on black
-	INT 0x10		;Video interrupt
-	RET			;Return to calling procedure
+	MOV AH, 0x0E		; print char
+	MOV BH, 0x00		; page no
+	MOV BL, 0x07		; text attribute lightgrey font on black
+	INT 0x10		; call video interrupt
+	RET			; exit
 
 ;Procedure to Print a null terminated String on screen
 ;input: char pointer in SI
@@ -30,7 +30,7 @@ exit_function:
 
 
 ;Data
-WelcomeMsg db 'Hello World', 0		;
+WelcomeMsg db 'Hello World', 0;
 
 TIMES 510 - ($ - $$) db 0	; fill up with 0 to reach 512KB
 DW 0xAA55			; boot signature at the

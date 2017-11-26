@@ -114,8 +114,8 @@ _printString:
 ;---------------------------------------------------------------
 ; procedure to print a horizontally aligned string
 ; input : string pointer in SI
-; input : length of strng (2bytes)
-; input : affected line (2bytes)
+; input : length of string 2bytes at bp+6
+; input : affected line 2bytes at bp+4
 ;---------------------------------------------------------------
 _printCenteredString:
 
@@ -130,7 +130,7 @@ _printCenteredString:
 	div bx				; divide ax by 2
 
 	mov dl, al			; move x offset to dl
-	mov dh, BYTE [bp+4]		; get y offset (dh) from stack
+	mov dh, BYTE [bp+4]		; move y offset to dh from stack
 	call _setCursorPosition 	; set cursorpition
 
 	call _printString		; print string now

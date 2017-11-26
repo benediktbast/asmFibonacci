@@ -17,36 +17,40 @@ _nullBootMain:
 ;---------------------------------------------------------------
 _printNullMessage:
 
+	push bp				; save base pointer
+	mov bp, sp			; set base pointer
+
 	push NullMsgLen
-	push 0x2
+	push 0x8
 	mov si, NullMsg1
 	call _printCenteredString
 	
-;	push NullMsgLen
-;	mov si, NullMsg2
-;	push 0x9
-;	call _printCenteredString
+	push NullMsgLen
+	mov si, NullMsg2
+	push 0x9
+	call _printCenteredString
 	
-;	push NullMsgLen
-;	mov si, NullMsg3
-;	push 0xa
-;	call _printCenteredString
+	push NullMsgLen
+	mov si, NullMsg3
+	push 0xa
+	call _printCenteredString
 
-;	push NullMsgLen
-;	mov si, NullMsg4
-;	push 0xb
-;	call _printCenteredString
+	push NullMsgLen
+	mov si, NullMsg4
+	push 0xb
+	call _printCenteredString
 
-;	push NullMsgLen
-;	mov si, NullMsg5
-;	push 0xc
-;	call _printCenteredString
-	
-;	push NullMsgLen
-;	mov si, NullMsg6
-;	push 0xd
-;	call _printCenteredString
+	push NullMsgLen
+	mov si, NullMsg5
+	push 0xc
+	call _printCenteredString
 
+	push NullMsgLen
+	mov si, NullMsg6
+	push 0xd
+	call _printCenteredString
+
+	leave
 	ret
 ;---------------------------------------------------------------
 ; procedure to move video outpout to a given poisition
@@ -115,19 +119,23 @@ _printString:
 ;---------------------------------------------------------------
 _printCenteredString:
 
+	push bp				; save base pointtr
+	mov bp, sp			; set base pointer
+
 	xor dx, dx			; set remainder to 0
 	mov ax, 0x50			; 80 columns per line
-	sub ax, WORD [bp+4]		; subtract line length - string length
+	sub ax, WORD [bp+6]		; subtract line length - string length
 
 	mov bx, 0x2			; divisor = 2
 	div bx				; divide ax by 2
 
 	mov dl, al			; move x offset to dl
-	mov dh, BYTE [bp+2]		; get y offset (dh) from stack
+	mov dh, BYTE [bp+4]		; get y offset (dh) from stack
 	call _setCursorPosition 	; set cursorpition
 
 	call _printString		; print string now
-	
+
+	leave
 	ret
 
 ; data

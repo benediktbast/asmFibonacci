@@ -1,6 +1,6 @@
 # nasmPlayground
 
-This is my playground for learning x86_64 assembly. Work in progress, So don't expect it to work ;)
+This is my playground for learning x86 assembly. Work in progress, So don't expect it to work ;)
 
 ## Current projects:
 * fibonacci - A fibonacci implementation
@@ -16,7 +16,7 @@ You need:
 
 `make all clean` to build all projects
 
-## How to build nullB00t:
+## nullB00t:
 You need additionally:
 * qemu
 

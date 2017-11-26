@@ -20,9 +20,9 @@ _printNullMessage:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	mov si, NullMsg1
-	push 0x8
-	call _printCenteredString
+	mov si, NullMsg1		; string to SI
+	push 0x8			; push target row to stack
+	call _printCenteredString	; print centered string
 	
 	mov si, NullMsg2
 	push 0x9
@@ -134,12 +134,14 @@ _printString:
 ;---------------------------------------------------------------
 _printCenteredString:
 
-	push bp				; save base pointtr
+	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	xor bx, bx			; clean bx, may there is tuff in bh
+	xor bx, bx			; clean BX, may there is stuff in BH
 	call _getStringLn		; get length of string in SI
-	mov bl, al			; move return value to bx
+	cmp al, 0x50			; check if str len > 80
+	jg .errorTooLong		; handle error
+	mov bl, al			; else move return value to BL
 
 	xor dx, dx			; set remainder to 0
 	mov ax, 0x50			; 80 columns per line
@@ -148,12 +150,20 @@ _printCenteredString:
 	mov bx, 0x2			; divisor = 2
 	div bx				; divide ax by 2
 
-	mov dl, al			; move x offset to dl
-	mov dh, BYTE [bp+4]		; move y offset to dh from stack
+	mov dl, al			; move x offset to DL
+	mov dh, BYTE [bp+4]		; move y offset to DH
+.setCursor
 	call _setCursorPosition 	; set cursorpition
 
 	call _printString		; print string now
+	call .exitCenteredString
 
+.errorTooLong:
+	mov dl, 0x0			; set x offset to 0
+	mov dh, BYTE [bp+4]		; get y from stack
+	call .setCursor
+
+.exitCenteredString
 	leave
 	ret
 

@@ -20,38 +20,33 @@ _printNullMessage:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	push NullMsgLen
-	push 0x8
 	mov si, NullMsg1
+	push 0x8
 	call _printCenteredString
 	
-	push NullMsgLen
 	mov si, NullMsg2
 	push 0x9
 	call _printCenteredString
 	
-	push NullMsgLen
 	mov si, NullMsg3
 	push 0xa
 	call _printCenteredString
 
-	push NullMsgLen
 	mov si, NullMsg4
 	push 0xb
 	call _printCenteredString
 
-	push NullMsgLen
 	mov si, NullMsg5
 	push 0xc
 	call _printCenteredString
 
-	push NullMsgLen
 	mov si, NullMsg6
 	push 0xd
 	call _printCenteredString
 
 	leave
 	ret
+
 ;---------------------------------------------------------------
 ; procedure to move video outpout to a given poisition
 ; input : dl = x position
@@ -84,6 +79,27 @@ _clearScreen:
 	ret
 
 ;---------------------------------------------------------------
+; procedure to get length of an null terminated string
+; input: char pointer in SI
+; output: lengt of string in al
+;---------------------------------------------------------------
+_getStringLn:
+	xor bl, bl			; set counter to 0
+	push si				; store string pointer
+
+.countNextChar:
+	mov al, [si]			; store ascii value from SI to AL
+	or al, al			; if AL contains null
+	jz .exitGetStringLn		; exit function
+	inc si				; increment pointer
+	inc bl				; increment counter
+	jmp .countNextChar
+.exitGetStringLn:
+	pop si				; restore string pointer
+	mov al, bl			; move counter to al as return value
+	ret
+
+;---------------------------------------------------------------
 ; procedure to print one char to the string
 ; input: Ascii value in AL
 ;---------------------------------------------------------------
@@ -95,7 +111,7 @@ _printCharacter:
 	ret				; exit
 
 ;---------------------------------------------------------------
-; procedure to Print a null terminated String on screen
+; procedure to print a null terminated String on screen
 ; input: char pointer in SI
 ;---------------------------------------------------------------
 _printString:
@@ -114,7 +130,6 @@ _printString:
 ;---------------------------------------------------------------
 ; procedure to print a horizontally aligned string
 ; input : string pointer in SI
-; input : length of string 2bytes at bp+6
 ; input : affected line 2bytes at bp+4
 ;---------------------------------------------------------------
 _printCenteredString:
@@ -122,9 +137,13 @@ _printCenteredString:
 	push bp				; save base pointtr
 	mov bp, sp			; set base pointer
 
+	xor bx, bx			; clean bx, may there is tuff in bh
+	call _getStringLn		; get length of string in SI
+	mov bl, al			; move return value to bx
+
 	xor dx, dx			; set remainder to 0
 	mov ax, 0x50			; 80 columns per line
-	sub ax, WORD [bp+6]		; subtract line length - string length
+	sub ax, bx			; subtract line length - string length
 
 	mov bx, 0x2			; divisor = 2
 	div bx				; divide ax by 2

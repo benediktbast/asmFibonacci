@@ -17,7 +17,11 @@ You need:
 `make all clean` to build all projects
 
 ## nullB00t:
-You need additionally:
+This is a simple bootloader, that boots and draws a welcome message to the screen.
+
+![nullb00tScreenshot](assets/nullB00t.png?raw=true)
+
+To build you need additionally:
 * qemu
 
 `make nullB00tQemu`

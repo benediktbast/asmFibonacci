@@ -94,6 +94,7 @@ _getStringLn:
 	inc si				; increment pointer
 	inc bl				; increment counter
 	jmp .countNextChar
+
 .exitGetStringLn:
 	pop si				; restore string pointer
 	mov al, bl			; move counter to al as return value
@@ -130,7 +131,7 @@ _printString:
 ;---------------------------------------------------------------
 ; procedure to print a horizontally aligned string
 ; input : string pointer in SI
-; input : affected line 2bytes at bp+4
+; input : affected line 2bytes at BP+4
 ;---------------------------------------------------------------
 _printCenteredString:
 
@@ -152,7 +153,8 @@ _printCenteredString:
 
 	mov dl, al			; move x offset to DL
 	mov dh, BYTE [bp+4]		; move y offset to DH
-.setCursor
+
+.onSuccess
 	call _setCursorPosition 	; set cursorpition
 
 	call _printString		; print string now
@@ -161,7 +163,7 @@ _printCenteredString:
 .errorTooLong:
 	mov dl, 0x0			; set x offset to 0
 	mov dh, BYTE [bp+4]		; get y from stack
-	call .setCursor
+	call .onSuccess
 
 .exitCenteredString
 	leave

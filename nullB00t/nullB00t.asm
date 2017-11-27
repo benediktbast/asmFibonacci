@@ -91,15 +91,15 @@ _getStringLn:
 	xor bl, bl			; set counter to 0
 	push si				; store string pointer
 
-.countNextChar:
+.countNext:
 	mov al, [si]			; store ascii value from SI to AL
 	or al, al			; if AL contains null
-	jz .exitGetStringLn		; exit function
+	jz .done			; exit function
 	inc si				; increment pointer
 	inc bl				; increment counter
-	jmp .countNextChar
+	jmp .countNext			; next char
 
-.exitGetStringLn:
+.done:
 	pop si				; restore string pointer
 	mov al, bl			; move counter to al as return value
 	ret
@@ -109,7 +109,7 @@ _getStringLn:
 ; input: Ascii value in AL
 ;---------------------------------------------------------------
 _printCharacter:
-	mov ah, 0x0E			; print one char 
+	mov ah, 0x0E			; subfunction for printing one char
 	mov bh, 0x00			; page no
 	mov bl, 0x07			; text attribute lightgrey font on black
 	int 0x10			; call video interrupt
@@ -125,11 +125,11 @@ _printString:
 	mov al, [si]			; store ascii value from SI to AL
 	inc si				; increment pointer
 	or al, al			; if AL contains null
-	jz .exitPrintString 		; exit
+	jz .done	 		; exit
 	call _printCharacter 		; print AL to screen
 	jmp .nextChar			; next char
 
-.exitPrintString:
+.done:
 	ret				; exit
 
 ;---------------------------------------------------------------
@@ -162,14 +162,14 @@ _printCenteredString:
 	call _setCursorPosition 	; set cursorpition
 
 	call _printString		; print string now
-	call .exitCenteredString
+	call .done
 
 .errorTooLong:
 	mov dl, 0x0			; set x offset to 0
 	mov dh, BYTE [bp+4]		; get y from stack
 	call .onSuccess
 
-.exitCenteredString
+.done
 	leave
 	ret
 

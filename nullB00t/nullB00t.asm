@@ -24,8 +24,8 @@ _printNullMessage:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	mov si, NullMsg1		; string to SI
-	push 0x8			; push target row to stack
+	mov si, NullMsg1		; move string into SI
+	push 0x8			; use row 0x8
 	call _printCenteredString	; print centered string
 	
 	mov si, NullMsg2
@@ -157,7 +157,7 @@ _printCenteredString:
 	mov dl, al			; move x offset to DL
 	mov dh, BYTE [bp+4]		; move y offset to DH
 
-.onSuccess
+.onSuccess:
 	call _setCursorPosition 	; set cursorpition
 
 	call _printString		; print string now
@@ -168,7 +168,7 @@ _printCenteredString:
 	mov dh, BYTE [bp+4]		; get y from stack
 	call .onSuccess
 
-.done
+.done:
 	leave
 	ret
 

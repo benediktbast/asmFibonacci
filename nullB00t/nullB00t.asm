@@ -157,16 +157,15 @@ _printCenteredString:
 	mov dl, al			; move x offset to DL
 	mov dh, BYTE [bp+4]		; move y offset to DH
 
-.onSuccess:
+.success:
 	call _setCursorPosition 	; set cursorpition
-
 	call _printString		; print string now
 	call .done
 
 .errorTooLong:
 	mov dl, 0x0			; set x offset to 0
 	mov dh, BYTE [bp+4]		; get y from stack
-	call .onSuccess
+	call .success
 
 .done:
 	leave

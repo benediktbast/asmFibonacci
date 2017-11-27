@@ -75,7 +75,7 @@ _resetCursorPosition:
 ;---------------------------------------------------------------
 _clearScreen:
 	call _resetCursorPosition	; reset cursor to 0,0
-	mov ah, 0x9			; number of bytes defined in cx
+	mov ah, 0x9			; subfunction write char and attr at cursor
 	mov cx, 0x1000			; 4096 bytes
 	mov al, 0x20			; white space
 	mov bl, 0x17			; text attribute blue
@@ -92,10 +92,10 @@ _getStringLn:
 	push si				; store string pointer
 
 .countNext:
-	mov al, [si]			; store ascii value from SI to AL
+	lodsb				; get char from si
 	or al, al			; if AL contains null
 	jz .done			; exit function
-	inc si				; increment pointer
+	;inc si				; increment pointer
 	inc bl				; increment counter
 	jmp .countNext			; next char
 
@@ -109,7 +109,7 @@ _getStringLn:
 ; input: Ascii value in AL
 ;---------------------------------------------------------------
 _printCharacter:
-	mov ah, 0x0E			; subfunction for printing one char
+	mov ah, 0x0E			; subfunction: write char in tty mode
 	mov bh, 0x00			; page no
 	mov bl, 0x07			; text attribute lightgrey font on black
 	int 0x10			; call video interrupt
@@ -122,8 +122,7 @@ _printCharacter:
 _printString:
 
 .nextChar:
-	mov al, [si]			; store ascii value from SI to AL
-	inc si				; increment pointer
+	lodsb				; get char from si an inc
 	or al, al			; if AL contains null
 	jz .done	 		; exit
 	call _printCharacter 		; print AL to screen
@@ -142,10 +141,10 @@ _printCenteredString:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	xor bx, bx			; clean BX, may there is stuff in BH
 	call _getStringLn		; get length of string in SI
 	cmp al, 0x50			; check if str len > 80
 	jg .errorTooLong		; handle error
+	xor bx, bx			; clean BX, may there is stuff in BH
 	mov bl, al			; else move return value to BL
 
 	xor dx, dx			; set remainder to 0
@@ -183,7 +182,6 @@ NullMsg3 db 219,219,186, 32,219,219,201,219,219,187, 32,219,219,186,219,219,186,
 NullMsg4 db 219,219,186, 32,219,219,186,200,219,219,187,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32, 32,219,219,186,0
 NullMsg5 db 219,219,219,187,219,219,186, 32,200,219,219,219,219,186,200,219,219,219,219,219,219,201,188,219,219,219,219,219,219,219,187,219,219,219,219,219,219,219,187,219,219,219,186,0
 NullMsg6 db 200,205,205,188,200,205,188, 32, 32, 32,200,205,205,188, 32,200,205,205,205,205,205,188, 32,200,205,205,205,205,205,205,188,200,205,205,205,205,205,205,188,200,205,205,188,0
-NullMsgLen equ $-NullMsg6 		; assume, that all lines have the same length
 
 TIMES 510 - ($ - $$) db 0		; fill up with 0 to reach 512KB
 DW 0xAA55				; boot signature at the

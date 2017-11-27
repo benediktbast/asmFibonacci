@@ -4,7 +4,7 @@
 _nullBootMain:
 
 	mov ax, 0x7C00			; 4K stack space after the bootloader
-	add ax, 288			; 4096b + 512b (bl size) / 16b per frame
+	add ax, 0x120			; 4096b + 512b (bl size) / 16b per frame
 	mov ss, ax			; set stack space
 	mov sp, 0x1000			; set stack pointer to offset 4096
 

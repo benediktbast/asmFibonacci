@@ -22,7 +22,7 @@ _nullBootMain:
 _printNullMessage:
 
 	push bp				; save base pointer
-	mov bp, sp			; set base pointer
+	mov bp, sp			; access arguments
 
 	mov si, NullMsg1		; move string into SI
 	push 0x8			; use row 0x8
@@ -48,7 +48,7 @@ _printNullMessage:
 	push 0xd
 	call _printCenteredString
 
-	leave
+	leave				; restore BP and SP
 	ret
 
 ;---------------------------------------------------------------
@@ -78,7 +78,7 @@ _clearScreen:
 	mov ah, 0x9			; subfunction write char and attr at cursor
 	mov cx, 0x1000			; 4096 bytes
 	mov al, 0x20			; white space
-	mov bl, 0x17			; text attribute blue
+	mov bl, 0x17			; text attribute: grey font, blue bg
 	int 0x10			; call video interrupt
 	ret
 
@@ -95,7 +95,6 @@ _getStringLn:
 	lodsb				; get char from si
 	or al, al			; if AL contains null
 	jz .done			; exit function
-	;inc si				; increment pointer
 	inc bl				; increment counter
 	jmp .countNext			; next char
 
@@ -106,12 +105,12 @@ _getStringLn:
 
 ;---------------------------------------------------------------
 ; procedure to print one char to the string
-; input: Ascii value in AL
+; input: ascii value in AL
 ;---------------------------------------------------------------
 _printCharacter:
 	mov ah, 0x0E			; subfunction: write char in tty mode
 	mov bh, 0x00			; page no
-	mov bl, 0x07			; text attribute lightgrey font on black
+	mov bl, 0x07			; text attribute: grey font, black bg
 	int 0x10			; call video interrupt
 	ret				; exit
 
@@ -134,7 +133,7 @@ _printString:
 ;---------------------------------------------------------------
 ; procedure to print a horizontally aligned string
 ; input : string pointer in SI
-; input : affected line 2bytes at BP+4
+; arg #1 : 1 byte - row number to print string
 ;---------------------------------------------------------------
 _printCenteredString:
 
@@ -155,20 +154,20 @@ _printCenteredString:
 	div bx				; divide ax by 2
 
 	mov dl, al			; move x offset to DL
-	mov dh, BYTE [bp+4]		; move y offset to DH
+	mov dh, BYTE [bp+4]		; move y offset to DH, arg #1
 
 .success:
 	call _setCursorPosition 	; set cursorpition
 	call _printString		; print string now
 	call .done
 
-.errorTooLong:
-	mov dl, 0x0			; set x offset to 0
-	mov dh, BYTE [bp+4]		; get y from stack
-	call .success
+.errorTooLong:				; print text at col 0
+	mov dl, 0x0			; move x offset to DL
+	mov dh, BYTE [bp+4]		; move y offset to DH, arg #1
+	call .success			; exit normally
 
 .done:
-	leave
+	leave				; restore BP and SP
 	ret
 
 ; data

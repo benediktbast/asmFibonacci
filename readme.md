@@ -26,6 +26,10 @@ To build you need additionally:
 
 `make nullB00tQemu`
 
+To assemble:
+
+`objdump -D -Mintel,i8086 -b binary -m i386 nullB00t.bin`
+
 Note: Maybe you need to replace the qemu command in your make file, according to your system.
 I use:
 

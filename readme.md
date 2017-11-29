@@ -33,4 +33,4 @@ To assemble:
 Note: Maybe you need to replace the qemu command in your make file, according to your system.
 I use:
 
-`QEMU = qemu-system-x86_64`
+`QEMU = qemu-system-i386`

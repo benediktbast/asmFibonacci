@@ -1,7 +1,7 @@
 BINARIES = nullB00t.bin
 ASM = nasm
 ASM_FLAGS = -f bin
-QEMU = qemu-system-x86_64
+QEMU = qemu-system-i386
 
 all: $(BINARIES)
 

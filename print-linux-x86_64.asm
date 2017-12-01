@@ -88,7 +88,6 @@ _iprint:
 
 	ret
 
-
 ;------------------------------------------------
 ; procedure to print an integer 
 ; and a crlf
@@ -115,5 +114,3 @@ _printcrlf:
 	pop rax					; restore original rax
 
 	ret
-
-

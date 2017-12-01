@@ -1,3 +1,6 @@
+; fibonacci.asm
+%include 'print-linux-x86_64.asm'	; include sprint, iprint, etc ...
+
 section .data
 	msg db "How many numbers do you want to add? ",0
 	ofErrorMsg db "<< Overflow Exit program >>",10,0
@@ -25,7 +28,7 @@ section .text
 
 _start:
 	mov rax, msg			; print welcome messagee
-	call _printString
+	call _sprint
 
 	mov rax, defaultMax		; print default max
 	call _printInt
@@ -33,13 +36,9 @@ _start:
 	call _fibonacci			; calculate fibonacci
 
 	mov rax, exitMsg
-	call _printString
+	call _sprint
 
 	exit 0				; call macro exit(0)
-
-;	mov rax, sys_exit		; exit(0)
-;	xor rdi, rdi
-;	syscall
 
 ; output: calculating fibonacci numbers with a given limit
 _fibonacci:
@@ -72,26 +71,6 @@ _getMaxNum:
 	mov rsi, inputBuffer
 	mov rdx, 8
 	syscall				; sys_read(std_in, inputBuffer, 8)
-	ret
-
-;input: rax = pointer to string
-;output: print null terminated string at rax to std_out
-_printString:
-	push rax
-	xor rbx, rbx			; set counter to zero
-
-.printStringLoop:
-	inc rax				; inrecment string pointer
-	inc rbx				; increment counter
-	mov cl, [rax]			; mov current char (8 bit) to rcx
-	or cl, cl			; check for null terminator
-	jnz .printStringLoop		; continue loop
-
-	mov rax, sys_write
-	mov rdi, std_out
-	pop rsi				; get string from stack
-	mov rdx, rbx			; length of string = counter
-	syscall				; sys_write(std_out, string, rbx)
 	ret
 
 ; input: rax = integer to print
@@ -142,5 +121,5 @@ _printInt:
 
 _exitOF:
 	mov rax, ofErrorMsg
-	call _printString		; print error message
+	call _sprint		; print error message
 	exit 1				; call macro exit(1)

@@ -40,3 +40,80 @@ _sprint:
 	pop rdx
 
 	ret
+
+;------------------------------------------------
+; procedure to print an string 
+; and a crlf
+; input: string pointer in RAX
+;------------------------------------------------
+_sprintln:
+	call _sprint				; print integer
+	call _printcrlf				; print crlf
+
+	ret
+
+;------------------------------------------------
+; procedure to print an integer on screen
+; input: integer value in RAX
+;------------------------------------------------
+_iprint:
+	push rax
+	push rcx
+	push rdx
+	push rsi
+	xor rcx, rcx				; set counter to zero
+
+.itao:
+	inc rcx					; increment counter
+	xor rdx, rdx				; set remainder to zero
+	mov rsi, 10				; divisor
+	idiv rsi				; rax / 10
+	add rdx, 48				; remainder + 48 = asii representation
+	push rdx				; push char to stack
+	cmp rax, 0				; test if division result = 0
+	jnz .itao				; if !=0 continue
+
+.print:
+	dec rcx					; decrement counter
+	mov rax, rsp				; stack pointer = beginning of string
+	call _sprint
+	pop rax					; remove char from stack
+	cmp rcx, 0				; if counter = 0
+	jnz .print				; if counter !=0 print next char
+	
+	pop rsi
+	pop rdx
+	pop rcx
+	pop rax
+
+	ret
+
+
+;------------------------------------------------
+; procedure to print an integer 
+; and a crlf
+; input: integer value in RAX
+;------------------------------------------------
+_iprintln:
+	call _iprint				; print integer
+	call _printcrlf				; print crlf
+
+	ret
+
+;------------------------------------------------
+; procedure to print an crlf on screen
+;------------------------------------------------
+_printcrlf:
+	push rax
+	mov rax, 10				; ascci = crlf
+	
+	push rax				; push rax to get a pointer to the char
+	mov rax, rsp				; move adress of char to rax
+	call _sprint				; call string print
+
+	pop rax					; remove char
+	pop rax					; restore original rax
+
+	ret
+
+

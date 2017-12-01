@@ -75,6 +75,8 @@ _getMaxNum:
 ; output: print integers as string to std_out
 _printInt:
 	push rbx
+	push rcx
+	push rdx
 
 	mov rcx, strBuffer		; move adress of buffer to rcx
 	mov rbx, 10			; new line character
@@ -117,7 +119,8 @@ _printInt:
 	cmp rcx, strBuffer		; if array position >= start of int bffer
 	jge .printIntLoop2		; continue printing
 
-
+	pop rdx
+	pop rcx
 	pop rbx
 	ret
 

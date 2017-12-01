@@ -40,14 +40,3 @@ _sprint:
 	pop rdx
 
 	ret
-
-_sprintln:
-	call _sprint
-	
-	push rax
-	mov rax, 10
-	push rax
-	mov rax, rsp
-	call _sprint
-	
-	ret

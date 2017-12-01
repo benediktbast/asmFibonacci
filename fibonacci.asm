@@ -54,10 +54,8 @@ _fibonacci:
 
 	jo _exitOF			; exit when overflow happens
 
-	push rbx			; safe counter in stack
 	call _printInt			; print result from rax
 
-	pop rbx				; get counter from stack
 	sub rbx, 1			; decrement counter
 	jnz .fibonacciLoop		; countinue loop if rbx > 0 
 
@@ -76,6 +74,8 @@ _getMaxNum:
 ; input: rax = integer to print
 ; output: print integers as string to std_out
 _printInt:
+	push rbx
+
 	mov rcx, strBuffer		; move adress of buffer to rcx
 	mov rbx, 10			; new line character
 	mov [rcx], rbx			; add new line character first position of array
@@ -117,6 +117,8 @@ _printInt:
 	cmp rcx, strBuffer		; if array position >= start of int bffer
 	jge .printIntLoop2		; continue printing
 
+
+	pop rbx
 	ret
 
 _exitOF:

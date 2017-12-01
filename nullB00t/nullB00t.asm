@@ -85,22 +85,22 @@ _clearScreen:
 ;---------------------------------------------------------------
 ; procedure to get length of an null terminated string
 ; input: char pointer in SI
-; output: lengt of string in al
+; output: length of string in AL
 ;---------------------------------------------------------------
 _slen:
-	xor bl, bl			; set counter to 0
-	push si				; store string pointer
-
-.countNext:
-	lodsb				; get char from si
-	or al, al			; if AL contains null
+	push bx				; save BX
+	mov bx, si			; save adress of first char to BX
+	
+.next:
+	cmp byte [bx], 0 		; if char is null
 	jz .done			; exit function
-	inc bl				; increment counter
-	jmp .countNext			; next char
+	inc bx				; increment adress
+	jmp .next			; next char
 
 .done:
-	pop si				; restore string pointer
-	mov al, bl			; move counter to al as return value
+	sub bx, si			; first adress - last adress
+	mov al, bl			; use BL as return value
+	pop bx				; restore BX
 	ret
 
 ;---------------------------------------------------------------
@@ -120,12 +120,12 @@ _printchar:
 ;---------------------------------------------------------------
 _sprint:
 
-.nextChar:
+.next:
 	lodsb				; get char from si an inc
 	or al, al			; if AL contains null
 	jz .done	 		; exit
 	call _printchar 		; print AL to screen
-	jmp .nextChar			; next char
+	jmp .next			; next char
 
 .done:
 	ret				; exit
@@ -140,11 +140,14 @@ _printCenteredString:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
+	push ax				; save AX
+	push bx				; save BX
+	push dx				; save DX
+	
 	call _slen			; get length of string in SI
 	cmp al, 0x50			; check if str len > 80
 	jg .errorTooLong		; handle error
-	xor bx, bx			; clean BX, may there is stuff in BH
-	mov bl, al			; else move return value to BL
+	mov bl, al			; mov str len to BL
 
 	xor dx, dx			; set remainder to 0
 	mov ax, 0x50			; 80 columns per line
@@ -167,6 +170,9 @@ _printCenteredString:
 	call .success			; exit normally
 
 .done:
+	pop dx				; restore DX
+	pop bx				; restore AX
+	pop ax				; restore BX
 	leave				; restore BP and SP
 	ret
 

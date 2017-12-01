@@ -42,19 +42,19 @@ _start:
 
 ; output: calculating fibonacci numbers with a given limit
 _fibonacci:
-	mov r8, QWORD 0 
-	mov r9, QWORD 1			; start with numbers 0 and 1
+	mov rax,  1			; param 2
+	mov rdx,  0			; param 1
 	mov rbx, defaultMax		; set counter to max, decrement later
 
 .fibonacciLoop:
-	mov rax, QWORD r8	
-	adc rax, r9			; add r8 + r9 and move result to rax for output
-	mov r8, QWORD r9		; use r9 as first parameter next time
-	mov r9, QWORD rax		; use result as second parameter next time
-
+	push rax			; save param 2 on stack
+	adc rax, rdx			; param 2 = param 2 + param 1
+	pop rdx				; save as new param 1
 	jo _exitOF			; exit when overflow happens
 
+	push rax			; save rax
 	call _printInt			; print result from rax
+	pop rax				; restore rax
 
 	sub rbx, 1			; decrement counter
 	jnz .fibonacciLoop		; countinue loop if rbx > 0 

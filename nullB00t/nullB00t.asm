@@ -1,7 +1,7 @@
 [BITS 16]				; 16 bit code
 [ORG 0x7C00]				; load  code to memory 0x7C00
 
-_nullBootMain:
+_start:
 
 	mov ax, 0x7C00			; 4K stack space after the bootloader
 	add ax, 0x120			; 4096b + 512b (bl size) / 16b per frame
@@ -87,7 +87,7 @@ _clearScreen:
 ; input: char pointer in SI
 ; output: lengt of string in al
 ;---------------------------------------------------------------
-_getStringLn:
+sLen:
 	xor bl, bl			; set counter to 0
 	push si				; store string pointer
 
@@ -107,7 +107,7 @@ _getStringLn:
 ; procedure to print one char to the string
 ; input: ascii value in AL
 ;---------------------------------------------------------------
-_printCharacter:
+_printchar:
 	mov ah, 0x0E			; subfunction: write char in tty mode
 	mov bh, 0x00			; page no
 	mov bl, 0x07			; text attribute: grey font, black bg
@@ -118,13 +118,13 @@ _printCharacter:
 ; procedure to print a null terminated String on screen
 ; input: char pointer in SI
 ;---------------------------------------------------------------
-_printString:
+_sprint:
 
 .nextChar:
 	lodsb				; get char from si an inc
 	or al, al			; if AL contains null
 	jz .done	 		; exit
-	call _printCharacter 		; print AL to screen
+	call _printchar 		; print AL to screen
 	jmp .nextChar			; next char
 
 .done:
@@ -140,7 +140,7 @@ _printCenteredString:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	call _getStringLn		; get length of string in SI
+	call sLen			; get length of string in SI
 	cmp al, 0x50			; check if str len > 80
 	jg .errorTooLong		; handle error
 	xor bx, bx			; clean BX, may there is stuff in BH
@@ -158,7 +158,7 @@ _printCenteredString:
 
 .success:
 	call _setCursorPosition 	; set cursorpition
-	call _printString		; print string now
+	call _sprint			; print string now
 	call .done
 
 .errorTooLong:				; print text at col 0

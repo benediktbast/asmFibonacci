@@ -87,7 +87,7 @@ _clearScreen:
 ; input: char pointer in SI
 ; output: lengt of string in al
 ;---------------------------------------------------------------
-sLen:
+_slen:
 	xor bl, bl			; set counter to 0
 	push si				; store string pointer
 
@@ -140,7 +140,7 @@ _printCenteredString:
 	push bp				; save base pointer
 	mov bp, sp			; set base pointer
 
-	call sLen			; get length of string in SI
+	call _slen			; get length of string in SI
 	cmp al, 0x50			; check if str len > 80
 	jg .errorTooLong		; handle error
 	xor bx, bx			; clean BX, may there is stuff in BH

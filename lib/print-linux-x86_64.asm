@@ -1,3 +1,7 @@
+%define crlf 		0xa			; ascii code crlf
+%define std_out 	1			; std_out for linux syscall
+%define sys_write	1			; sys_wirte for linux syscall
+
 ;------------------------------------------------
 ; procedure to calculate the length of a string
 ; input: string pointer in RAX
@@ -13,20 +17,23 @@ _slen:
 	jmp .next				; continue 
 
 .done:
-	sub rax, rbx				; last position - first position 
+	sub rax, rbx				; len = last position - first position 
 	pop rbx					; restore RBX
 	ret
+
 
 ;------------------------------------------------
 ; procedure to print a string
 ; input: string pointer in RAX
 ;------------------------------------------------
 _sprint:
-	push rdx
+	push rax				; save registers
+	push rbx 
 	push rcx
-	push rbx
-	push rax
+	push rdx
 
+	push rax				; push again, to last position of stack
+	
 	call _slen				; get string length
 
 	mov rdx, rax				; length of string
@@ -35,11 +42,13 @@ _sprint:
 	mov rdi, 1				; std out
 	syscall
 
-	pop rbx
+	pop rdx					; restore registers
 	pop rcx
-	pop rdx
+	pop rbx
+	pop rax
 
 	ret
+
 
 ;------------------------------------------------
 ; procedure to print an string 
@@ -52,15 +61,17 @@ _sprintln:
 
 	ret
 
+
 ;------------------------------------------------
 ; procedure to print an integer on screen
 ; input: integer value in RAX
 ;------------------------------------------------
 _iprint:
-	push rax
+	push rax				; save registers
 	push rcx
 	push rdx
 	push rsi
+
 	xor rcx, rcx				; set counter to zero
 
 .itao:
@@ -75,18 +86,19 @@ _iprint:
 
 .print:
 	dec rcx					; decrement counter
-	mov rax, rsp				; stack pointer = beginning of string
-	call _sprint
+	mov QWORD rax, [rsp]			; mov char on current stack position to RAX
+	call _cprint				; print that char
 	pop rax					; remove char from stack
-	cmp rcx, 0				; if counter = 0
+	cmp rcx, 0				; check counter for 0
 	jnz .print				; if counter !=0 print next char
 	
-	pop rsi
+	pop rsi					; restore registers
 	pop rdx
 	pop rcx
 	pop rax
 
 	ret
+
 
 ;------------------------------------------------
 ; procedure to print an integer 
@@ -99,18 +111,42 @@ _iprintln:
 
 	ret
 
+
 ;------------------------------------------------
-; procedure to print an crlf on screen
+; procedure to print a crlf on screen
 ;------------------------------------------------
 _printcrlf:
 	push rax
-	mov rax, 10				; ascci = crlf
 	
-	push rax				; push rax to get a pointer to the char
-	mov rax, rsp				; move adress of char to rax
-	call _sprint				; call string print
+	mov rax, 0xa				; ascii code crlf
+	call _cprint				; print char
 
-	pop rax					; remove char
-	pop rax					; restore original rax
+	pop rax					; restore original RAX
+	
+	ret
+
+
+;------------------------------------------------
+; procedure to print one singe char to screen
+; input: char in RAX
+;------------------------------------------------
+_cprint:
+	push rbx				; save registers
+	push rcx
+	push rdx
+	
+	push rax				; push RAX to get a pointer to the char
+
+	mov rdx, 1				; print one byte
+	mov rsi, rsp				; pop adress of char to  RSI
+	mov rax, 1				; sys_write
+	mov rdi, 1				; std out
+	syscall
+	
+	pop rax					; restore RAX
+
+	pop rdx					; restore registers
+	pop rcx
+	pop rbx
 
 	ret

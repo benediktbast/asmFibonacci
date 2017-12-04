@@ -1,0 +1,34 @@
+
+- NASM Map file ---------------------------------------------------------------
+
+Source file:  nullB00t.asm
+Output file:  nullB00t.bin
+
+-- Symbols --------------------------------------------------------------------
+
+---- Section .text ------------------------------------------------------------
+
+Real              Virtual           Name
+            7C00              7C00  _start
+            7C15              7C15  _printNullMessage
+            7C4A              7C4A  _setCursorPosition
+            7C4F              7C4F  _resetCursorPosition
+            7C57              7C57  _clearScreen
+            7C66              7C66  _slen
+            7C69              7C69  _slen.next
+            7C71              7C71  _slen.done
+            7C77              7C77  _printchar
+            7C80              7C80  _sprint
+            7C80              7C80  _sprint.next
+            7C8A              7C8A  _sprint.done
+            7C8B              7C8B  _printCenteredString
+            7CAB              7CAB  _printCenteredString.success
+            7CB4              7CB4  _printCenteredString.errorTooLong
+            7CBC              7CBC  _printCenteredString.done
+            7CC1              7CC1  NullMsg1
+            7CED              7CED  NullMsg2
+            7D19              7D19  NullMsg3
+            7D45              7D45  NullMsg4
+            7D71              7D71  NullMsg5
+            7D9D              7D9D  NullMsg6
+

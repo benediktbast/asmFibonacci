@@ -1,4 +1,5 @@
 [BITS 16]				; 16 bit code
+[MAP SYMBOLS nullB00t.map]
 [ORG 0x7C00]				; load  code to memory 0x7C00
 
 _start:

@@ -3,18 +3,20 @@ This is a simple bootloader, that boots and draws a welcome message to the scree
 
 ![nullb00tScreenshot](../assets/nullB00t.png?raw=true)
 
-## How to build: 
-You need:
+## You need:
 * nasm
 * qemu
+* gdb
 
-`make nullB00tQemu`
+## Build: 
 
-## How to disassemble raw binaries:  
+`make qemu`
+
+## Debug:
+
+`make debug`
+
+## Disassemble raw binaries:  
 
 `objdump -D -Mintel,i8086 -b binary -m i386 nullB00t.bin`
 
-Note: Maybe you want to replace the qemu command in your make file, according to your system.
-I use:
-
-`QEMU = qemu-system-i386`

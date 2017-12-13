@@ -1,6 +1,7 @@
 ### Binaries ###
 fibonacci
 nullB00t.bin
+atoi-test
 
 ### ASM ###
 *.o

@@ -30,14 +30,3 @@ _start:
 	call _iprintln
 
 	exit 0
-
-;------------------------------------------------
-;read 100 bytes in put from std_in
-;output: set maxmimum number of fibonacci numbers
-;------------------------------------------------
-_getMaxNum:
-	mov rax, sys_read
-	mov rdi, std_in
-	mov rsi, inputBuffer
-	mov rdx, 8
-	syscall				; sys_read(std_in, inputBuffer, 8)

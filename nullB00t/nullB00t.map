@@ -10,25 +10,27 @@ Output file:  nullB00t.bin
 
 Real              Virtual           Name
             7C00              7C00  _start
-            7C15              7C15  _printNullMessage
-            7C4A              7C4A  _setCursorPosition
-            7C4F              7C4F  _resetCursorPosition
-            7C57              7C57  _clearScreen
-            7C66              7C66  _slen
-            7C69              7C69  _slen.next
-            7C71              7C71  _slen.done
-            7C77              7C77  _printchar
-            7C80              7C80  _sprint
-            7C80              7C80  _sprint.next
-            7C8A              7C8A  _sprint.done
-            7C8B              7C8B  _printCenteredString
-            7CAB              7CAB  _printCenteredString.success
-            7CB4              7CB4  _printCenteredString.errorTooLong
-            7CBC              7CBC  _printCenteredString.done
-            7CC1              7CC1  NullMsg1
-            7CED              7CED  NullMsg2
-            7D19              7D19  NullMsg3
-            7D45              7D45  NullMsg4
-            7D71              7D71  NullMsg5
-            7D9D              7D9D  NullMsg6
+            7C15              7C15  _printWelcomeMsg
+            7C2E              7C2E  _setCursorPosition
+            7C36              7C36  _resetCursorPosition
+            7C3E              7C3E  _updateCursorPosition
+            7C47              7C47  _nextLine
+            7C57              7C57  _moveCursorToLine
+            7C6C              7C6C  _clearScreen
+            7C7B              7C7B  _slen
+            7C7E              7C7E  _slen.next
+            7C86              7C86  _slen.done
+            7C8C              7C8C  _printchar
+            7C95              7C95  _sprint
+            7C95              7C95  _sprint.next
+            7C9F              7C9F  _sprint.done
+            7CA0              7CA0  _printCenteredString
+            7CC1              7CC1  _printCenteredString.success
+            7CCA              7CCA  _printCenteredString.errorTooLong
+            7CD3              7CD3  _printCenteredString.done
+            7CD8              7CD8  cursorX
+            7CD9              7CD9  cursorY
+            7CDA              7CDA  cursorP
+            7CDB              7CDB  Msg1
+            7CE4              7CE4  Msg2
 

@@ -13,40 +13,25 @@ _start:
 
 	call _clearScreen		; redraw screen
 	
-	call _printNullMessage		; print welcome message
+	call _printWelcomeMsg		; print welcome message
 
 	jmp $
 
 ;---------------------------------------------------------------
 ; print ascii welcome message on screen
 ;---------------------------------------------------------------
-_printNullMessage:
+_printWelcomeMsg:
 
 	push bp				; save base pointer
 	mov bp, sp			; access arguments
 
-	mov si, NullMsg1		; move string into SI
-	push 0x8			; use row 0x8
+	push 0x8			
+	call _moveCursorToLine		; write message to line 8
+	mov si, Msg1			; move string into SI
 	call _printCenteredString	; print centered string
 	
-	mov si, NullMsg2
-	push 0x9
-	call _printCenteredString
-	
-	mov si, NullMsg3
-	push 0xa
-	call _printCenteredString
-
-	mov si, NullMsg4
-	push 0xb
-	call _printCenteredString
-
-	mov si, NullMsg5
-	push 0xc
-	call _printCenteredString
-
-	mov si, NullMsg6
-	push 0xd
+	call _nextLine
+	mov si, Msg2
 	call _printCenteredString
 
 	leave				; restore BP and SP
@@ -58,6 +43,7 @@ _printNullMessage:
 ; input : dh = y poisition
 ;---------------------------------------------------------------
 _setCursorPosition:
+	call _updateCursorPosition	; update position
 	mov ah, 0x2			; move cursor in video buffer
 	int 0x10			; call video interrupt
 	ret
@@ -69,6 +55,54 @@ _resetCursorPosition:
 	mov dl, 0x0			; set x = 0
 	mov dh, 0x0			; set y = 0
 	call _setCursorPosition		; set position
+	ret
+
+;---------------------------------------------------------------
+; position to save save current Cursor Position
+; input : dl = x position
+; input : dh = y position
+;---------------------------------------------------------------
+_updateCursorPosition
+	mov [cursorX], dl
+	mov [cursorY], dh
+	ret
+
+;---------------------------------------------------------------
+; procedure to move cursor to the next line
+;---------------------------------------------------------------
+_nextLine:
+	push dx
+
+	mov dl, [cursorX]		; use current X position
+	mov dh, [cursorY]		; load current Y position
+	inc dh	
+	; TODO: use generic function !
+	;call _moveCursorToLine
+	call _setCursorPosition		; set and update cursor
+
+	pop dx
+	ret
+
+;---------------------------------------------------------------
+; procedure to move cursor to a certain line
+; arg #1 : 1 byte - row number to print string
+;---------------------------------------------------------------
+_moveCursorToLine:
+	push bp				; save base pointer
+	mov bp, sp			; set base pointer
+
+	push ax				; save AX
+	push bx				; save BX
+	push dx				; save DX
+
+	mov dl, [cursorX]		; use current X position
+	mov dh, BYTE [bp+4]		; get new Y position from arg #1
+	call _setCursorPosition		; set and update cursor
+
+	pop dx				; restore DX
+	pop bx				; restore AX
+	pop ax				; restore BX
+	leave				; restore BP and SP
 	ret
 
 ;---------------------------------------------------------------
@@ -134,7 +168,6 @@ _sprint:
 ;---------------------------------------------------------------
 ; procedure to print a horizontally aligned string
 ; input : string pointer in SI
-; arg #1 : 1 byte - row number to print string
 ;---------------------------------------------------------------
 _printCenteredString:
 
@@ -158,16 +191,16 @@ _printCenteredString:
 	div bx				; divide ax by 2
 
 	mov dl, al			; move x offset to DL
-	mov dh, BYTE [bp+4]		; move y offset to DH, arg #1
+	mov dh, [cursorY]		; get current cursor y position 
 
 .success:
-	call _setCursorPosition 	; set cursorpition
+	call _setCursorPosition 	; set cursor postion
 	call _sprint			; print string now
 	call .done
 
 .errorTooLong:				; print text at col 0
 	mov dl, 0x0			; move x offset to DL
-	mov dh, BYTE [bp+4]		; move y offset to DH, arg #1
+	mov dh, [cursorY]		; move y offset to DH,
 	call .success			; exit normally
 
 .done:
@@ -178,12 +211,21 @@ _printCenteredString:
 	ret
 
 ; data
-NullMsg1 db 219,219,219,187,219,219,219,187, 32, 32, 32,219,219,187,219,219,187, 32, 32, 32,219,219,187,219,219,187, 32, 32, 32, 32, 32,219,219,187, 32, 32, 32, 32, 32,219,219,219,187,0
-NullMsg2 db 219,219,201,188,219,219,219,219,187, 32, 32,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32,200,219,219,186,0
-NullMsg3 db 219,219,186, 32,219,219,201,219,219,187, 32,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32, 32,219,219,186,0
-NullMsg4 db 219,219,186, 32,219,219,186,200,219,219,187,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32, 32,219,219,186,0
-NullMsg5 db 219,219,219,187,219,219,186, 32,200,219,219,219,219,186,200,219,219,219,219,219,219,201,188,219,219,219,219,219,219,219,187,219,219,219,219,219,219,219,187,219,219,219,186,0
-NullMsg6 db 200,205,205,188,200,205,188, 32, 32, 32,200,205,205,188, 32,200,205,205,205,205,205,188, 32,200,205,205,205,205,205,205,188,200,205,205,205,205,205,205,188,200,205,205,188,0
+cursorX resb 1				; cursor X Pposition
+cursorY resb 1				; cursor Y position
+cursorP resb 1				; current page
+
+Msg1 db "NullB00t",0
+Msg2 db "Bootloader Example",0
+
+
+;NullMsg1 db 219,219,219,187,219,219,219,187, 32, 32, 32,219,219,187,219,219,187, 32, 32, 32,219,219,187,219,219,187, 32, 32, 32, 32, 32,219,219,187, 32, 32, 32, 32, 32,219,219,219,187,0
+;NullMsg2 db 219,219,201,188,219,219,219,219,187, 32, 32,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32,200,219,219,186,0
+;NullMsg3 db 219,219,186, 32,219,219,201,219,219,187, 32,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32, 32,219,219,186,0
+;NullMsg4 db 219,219,186, 32,219,219,186,200,219,219,187,219,219,186,219,219,186, 32, 32, 32,219,219,186,219,219,186, 32, 32, 32, 32, 32,219,219,186, 32, 32, 32, 32, 32, 32,219,219,186,0
+;NullMsg5 db 219,219,219,187,219,219,186, 32,200,219,219,219,219,186,200,219,219,219,219,219,219,201,188,219,219,219,219,219,219,219,187,219,219,219,219,219,219,219,187,219,219,219,186,0
+;NullMsg6 db 200,205,205,188,200,205,188, 32, 32, 32,200,205,205,188, 32,200,205,205,205,205,205,188, 32,200,205,205,205,205,205,205,188,200,205,205,205,205,205,205,188,200,205,205,188,0
+
 
 TIMES 510 - ($ - $$) db 0		; fill up with 0 to reach 512KB
 DW 0xAA55				; boot signature at the

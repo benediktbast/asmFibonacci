@@ -30,7 +30,7 @@ _printWelcomeMsg:
 	mov si, Msg1			; move string into SI
 	call _printCenteredString	; print centered string
 	
-	call _nextLine
+	call _crlf
 	mov si, Msg2
 	call _printCenteredString
 
@@ -68,9 +68,9 @@ _updateCursorPosition
 	ret
 
 ;---------------------------------------------------------------
-; procedure to move cursor to the next line
+; procedure for linefeed only
 ;---------------------------------------------------------------
-_nextLine:
+_lf:
 	push dx
 
 	mov dl, [cursorX]		; use current X position
@@ -84,16 +84,24 @@ _nextLine:
 	ret
 
 ;---------------------------------------------------------------
-; procedure for carrige return line feed
+; procedure for carrige return only
 ;---------------------------------------------------------------
-_crlf:
+_cr:
 	push dx
 
 	mov dl, 0x0			; carrige return
-	mov dh, [cursorY]
-	inc dh				; line feed
+	mov dh, [cursorY]		; keep in current line
+	call _setCursorPosition
 
 	pop dx
+	ret
+
+;---------------------------------------------------------------
+; procedure for carrige return and linefeed
+;---------------------------------------------------------------
+_crlf:
+	call _cr
+	call _lf
 	ret
 
 ;---------------------------------------------------------------
@@ -132,6 +140,7 @@ _clearScreen:
 
 ;---------------------------------------------------------------
 ; procedure to get length of an null terminated string
+; with out linebreaks ( char 10 )
 ; input: char pointer in SI
 ; output: length of string in AL
 ;---------------------------------------------------------------
@@ -142,6 +151,8 @@ _slen:
 .next:
 	cmp byte [bx], 0 		; if char is null
 	jz .done			; exit function
+;	cmp byte [bx], 10		; ignore linebreaks
+;	je .next
 	inc bx				; increment adress
 	jmp .next			; next char
 
@@ -228,7 +239,7 @@ cursorX resb 1				; cursor X Pposition
 cursorY resb 1				; cursor Y position
 cursorP resb 1				; current page
 
-Msg1 db "NullB00t",0
+Msg1 db "NullB00t",10,0
 Msg2 db "Bootloader Example",0
 
 

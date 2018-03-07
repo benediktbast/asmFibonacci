@@ -14,24 +14,25 @@ Real              Virtual           Name
             7C2E              7C2E  _setCursorPosition
             7C36              7C36  _resetCursorPosition
             7C3E              7C3E  _updateCursorPosition
-            7C47              7C47  _nextLine
-            7C57              7C57  _crlf
-            7C62              7C62  _moveCursorToLine
-            7C77              7C77  _clearScreen
-            7C86              7C86  _slen
-            7C89              7C89  _slen.next
-            7C91              7C91  _slen.done
-            7C97              7C97  _printchar
-            7CA0              7CA0  _sprint
-            7CA0              7CA0  _sprint.next
-            7CAA              7CAA  _sprint.done
-            7CAB              7CAB  _printCenteredString
-            7CCC              7CCC  _printCenteredString.success
-            7CD5              7CD5  _printCenteredString.errorTooLong
-            7CDE              7CDE  _printCenteredString.done
-            7CE3              7CE3  cursorX
-            7CE4              7CE4  cursorY
-            7CE5              7CE5  cursorP
-            7CE6              7CE6  Msg1
-            7CEF              7CEF  Msg2
+            7C47              7C47  _lf
+            7C57              7C57  _cr
+            7C63              7C63  _crlf
+            7C6A              7C6A  _moveCursorToLine
+            7C7F              7C7F  _clearScreen
+            7C8E              7C8E  _slen
+            7C91              7C91  _slen.next
+            7C99              7C99  _slen.done
+            7C9F              7C9F  _printchar
+            7CA8              7CA8  _sprint
+            7CA8              7CA8  _sprint.next
+            7CB2              7CB2  _sprint.done
+            7CB3              7CB3  _printCenteredString
+            7CD4              7CD4  _printCenteredString.success
+            7CDD              7CDD  _printCenteredString.errorTooLong
+            7CE6              7CE6  _printCenteredString.done
+            7CEB              7CEB  cursorX
+            7CEC              7CEC  cursorY
+            7CED              7CED  cursorP
+            7CEE              7CEE  Msg1
+            7CF8              7CF8  Msg2
 

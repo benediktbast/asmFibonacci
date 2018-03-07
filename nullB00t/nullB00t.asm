@@ -84,6 +84,19 @@ _nextLine:
 	ret
 
 ;---------------------------------------------------------------
+; procedure for carrige return line feed
+;---------------------------------------------------------------
+_crlf:
+	push dx
+
+	mov dl, 0x0			; carrige return
+	mov dh, [cursorY]
+	inc dh				; line feed
+
+	pop dx
+	ret
+
+;---------------------------------------------------------------
 ; procedure to move cursor to a certain line
 ; arg #1 : 1 byte - row number to print string
 ;---------------------------------------------------------------

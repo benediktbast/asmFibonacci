@@ -15,22 +15,23 @@ Real              Virtual           Name
             7C36              7C36  _resetCursorPosition
             7C3E              7C3E  _updateCursorPosition
             7C47              7C47  _nextLine
-            7C57              7C57  _moveCursorToLine
-            7C6C              7C6C  _clearScreen
-            7C7B              7C7B  _slen
-            7C7E              7C7E  _slen.next
-            7C86              7C86  _slen.done
-            7C8C              7C8C  _printchar
-            7C95              7C95  _sprint
-            7C95              7C95  _sprint.next
-            7C9F              7C9F  _sprint.done
-            7CA0              7CA0  _printCenteredString
-            7CC1              7CC1  _printCenteredString.success
-            7CCA              7CCA  _printCenteredString.errorTooLong
-            7CD3              7CD3  _printCenteredString.done
-            7CD8              7CD8  cursorX
-            7CD9              7CD9  cursorY
-            7CDA              7CDA  cursorP
-            7CDB              7CDB  Msg1
-            7CE4              7CE4  Msg2
+            7C57              7C57  _crlf
+            7C62              7C62  _moveCursorToLine
+            7C77              7C77  _clearScreen
+            7C86              7C86  _slen
+            7C89              7C89  _slen.next
+            7C91              7C91  _slen.done
+            7C97              7C97  _printchar
+            7CA0              7CA0  _sprint
+            7CA0              7CA0  _sprint.next
+            7CAA              7CAA  _sprint.done
+            7CAB              7CAB  _printCenteredString
+            7CCC              7CCC  _printCenteredString.success
+            7CD5              7CD5  _printCenteredString.errorTooLong
+            7CDE              7CDE  _printCenteredString.done
+            7CE3              7CE3  cursorX
+            7CE4              7CE4  cursorY
+            7CE5              7CE5  cursorP
+            7CE6              7CE6  Msg1
+            7CEF              7CEF  Msg2
 

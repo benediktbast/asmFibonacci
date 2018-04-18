@@ -1,18 +1,12 @@
 %include './lib/print-linux-x86_64.asm'	; include sprint, iprint, etc ...
 %include './lib/sysexit-macros.asm'	; include sysexit macros
 
-%define sys_write  	1
-%define std_out  	1
-%define sys_read	0
-%define std_in		0
 %define char0		48		; ascii code for 0
 %define char1		49		; ascii code for 1
 %define whitespace	32		; ascii code whitespace
 
 section .data
 
-	mask 	equ 0x100000000		; for highest of 32 bits
-	shift	equ 0x80000000		; initially shift 31 bits
 	i	equ 8			; integer to test with
 
 section .text
@@ -35,7 +29,7 @@ _start:
 ;------------------------------------------------
 
 _binaryprint32:
-	mov rcx, 32			; counter for 32 bits
+	mov rcx, 0x20			; counter for 32 bits
 .loop:
 ;
 	push rax			; save value

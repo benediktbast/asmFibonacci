@@ -1,8 +1,6 @@
 %include './lib/print-linux-x86_64.asm'	; include sprint, iprint, etc ...
 %include './lib/sysexit-macros.asm'	; include sysexit macros
 
-%define char0		48		; ascii code for 0
-%define char1		49		; ascii code for 1
 %define whitespace	32		; ascii code whitespace
 
 section .data
@@ -31,21 +29,10 @@ _start:
 _binaryprint32:
 	mov rcx, 0x20			; counter for 32 bits
 .loop:
-;
 	push rax			; save value
+
 	and eax, 0x1			; mask lowest bit
-	jz .print0			; if masking sets zero flag print 0
-	jmp .print1			; else print 1
-	
-.print0:
-	mov eax, char0
-	jmp .continue
-
-.print1:
-	mov eax, char1
-	jmp .continue
-
-.continue:
+	add eax, 0x30			; add 48 to get ascii for 0 or 1
 	call _cprint			; print 0 or 1
 
 	pop rax				; restore value

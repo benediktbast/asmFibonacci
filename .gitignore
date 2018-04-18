@@ -2,6 +2,7 @@
 fibonacci
 nullB00t.bin
 atoi-test
+binaryprint
 
 ### ASM ###
 *.o

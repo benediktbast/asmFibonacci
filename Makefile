@@ -1,4 +1,4 @@
-BINARIES = fibonacci atoi-test
+BINARIES = fibonacci atoi-test binaryprint
 ASM = nasm
 ASM_FLAGS = -f elf64
 LINKER = ld

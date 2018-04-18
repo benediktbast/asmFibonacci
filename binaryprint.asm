@@ -13,9 +13,13 @@ section .text
 
 _start:
 	mov eax, i
+
 	call _iprintln
+	call _binaryprint32
 
 	mov eax, i
+	call _reversebit32
+	call _iprintln
 	call _binaryprint32
 
 	exit 0				; call macro exit(0)
@@ -23,11 +27,15 @@ _start:
 ;------------------------------------------------
 ; procedure to binary print an integer on screen
 ; currently the bits get printed in reversed order
-; input: integer value in EAX
+; input: integer value in eax
 ;------------------------------------------------
 
 _binaryprint32:
+
+	call _reversebit32
+
 	mov rcx, 0x20			; counter for 32 bits
+
 .loop:
 	push rax			; save value
 
@@ -37,9 +45,31 @@ _binaryprint32:
 
 	pop rax				; restore value
 	shr eax, 0x1			; rightshift value by 1
-
 	dec rcx				; decerment counter
 	jnz .loop			; if not zero loop again
 
 	call _printcrlf
+	ret
+
+
+;------------------------------------------------
+; procedure to reverse bits stored in EAX
+; input: integer value in EAX
+; output: reversed value in EAX
+;------------------------------------------------
+
+_reversebit32:
+	xor rbx, rbx			; save new value in rbx
+	mov rcx, 0x20			; counter for 32 bits
+
+.loop:
+
+	rcr eax, 1			; rotate EAX lsb to carry bit
+	rcl ebx, 1			; get carry bit to msb of EBX
+
+	dec rcx				; decerment counter
+	jnz .loop			; if not zero loop again
+
+	mov eax, ebx			; store result in eax
+
 	ret
